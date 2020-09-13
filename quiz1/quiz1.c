@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 typedef struct __node {
     int value;
@@ -14,10 +15,10 @@ void add_entry(node_t **head, int new_value)
     new_node->value = new_value;
     new_node->next = NULL;
 
-    AA1;
+    assert(new_node);
     while (*indirect)
         indirect = &(*indirect)->next;
-    AA2;
+    *indirect = new_node;
 }
 
 node_t *find_entry(node_t *head, int value)
@@ -41,9 +42,9 @@ void remove_entry(node_t **head, node_t *entry)
 
 node_t *swap_pair(node_t *head)
 {
-    for (node_t **node = &head; *node && (*node)->next; BB1) {
+    for (node_t **node = &head; *node && (*node)->next; node = &(*node)->next->next) {
         node_t *tmp = *node;
-        BB2;
+        *node = (*node)->next;
         tmp->next = (*node)->next;
         (*node)->next = tmp;
     }
@@ -55,7 +56,8 @@ node_t *reverse(node_t *head)
     node_t *cursor = NULL;
     while (head) {
         node_t *next = head->next;
-        CCC;
+        head->next = cursor;
+        cursor = head;
         head = next;
     }
     return cursor;
