@@ -51,6 +51,32 @@ node_t *swap_pair(node_t *head)
     return head;
 }
 
+void swap_pair2(node_t **head)
+{
+    node_t **indirect = head;
+    while ((*indirect) && (*indirect)->next )
+    {
+        node_t *tmp = *indirect;
+        *indirect=(*indirect)->next;
+        tmp->next = (*indirect)->next;
+        (*indirect)->next = tmp;
+
+        indirect = &(*indirect)->next->next;
+    }
+       
+}
+
+void swap_pair3(node_t **head)
+{
+    for (node_t **node = head; *node && (*node)->next; node = &(*node)->next->next) {
+        node_t *tmp = *node;
+        *node = (*node)->next;
+        tmp->next = (*node)->next;
+        (*node)->next = tmp;
+    }
+       
+}
+
 node_t *reverse(node_t *head)
 {
     node_t *cursor = NULL;
@@ -61,6 +87,36 @@ node_t *reverse(node_t *head)
         head = next;
     }
     return cursor;
+}
+
+void reverse1(node_t **head)
+{
+    node_t *cursor = NULL;
+    while(*head)
+    {
+        node_t *next = (*head)->next;
+        (*head)->next = cursor;
+        cursor = *head;
+        *head = next;
+    }
+    *head = cursor;
+}
+void rev_recursive(node_t *head,node_t *cursor,node_t **list)
+{
+    node_t *next = head->next;
+    head->next = cursor;    
+    
+    if (!next) {        
+        *list = head;
+        return; 
+    }else
+        rev_recursive(next, head, list);
+}
+void reverse2(node_t **head)
+{
+    node_t *cursor = NULL;
+    if(*head)
+        rev_recursive(*head,cursor,head);
 }
 
 void print_list(node_t *head)
@@ -96,10 +152,12 @@ int main(int argc, char const *argv[])
     /* swap pair.
      * See https://leetcode.com/problems/swap-nodes-in-pairs/
      */
-    head = swap_pair(head);
+    //head = swap_pair(head);
+    swap_pair3(&head);
     print_list(head);
 
-    head = reverse(head);
+    //head = reverse(head);
+    reverse2(&head);
     print_list(head);
 
     return 0;
