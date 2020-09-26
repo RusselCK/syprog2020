@@ -20,15 +20,15 @@ size_t hexspeak2val(char str[]){
     int len = strlen(str);
     assert(len);
 
-    if (len == 1)
+    if (len == 1) /* case 1 */
         return hexchar2val(str[0]);
     
     assert(str[0] == '0' && (str[1] == 'x' || str[1] == 'X'));
 
     size_t total = 0;
 
-    size_t i = 2;
-    for (; (i + 8) <= len ; i += 8)
+    size_t i = 2; 
+    for (; (i + 8) <= len ; i += 8) /* case 2 */
     {
         uint64_t payload;
         memcpy(&payload, str + i, 8);
@@ -55,11 +55,12 @@ size_t hexspeak2val(char str[]){
     //printf("%lx\n",total);
 
     //i = 10;
-    for (; i < len ; i++)
+    for (; i < len ; i++) /* case 3 */
     {
-     total = total << 4;
+     total = ( total << 4 | hexchar2val(str[i]));
      //printf("%lx\n",total);
-     total += hexchar2val(str[i]);
+     //total = total << 4;
+     //total += hexchar2val(str[i]);
      //printf("%lx\n",total);
     }
 
@@ -71,7 +72,7 @@ size_t hexspeak2val(char str[]){
 
 int main(){
     char a[] = "123456789AaBbCcDdEeFf";
-    char b[] = "0xC8BADF00D";   // 2343432205
+    char b[] = "0x8BADF00D";   // 2343432205
     char c[] = "0x78BADF00D";  // 32408203277
     //char d[] = "0xFEEDFACECAFEBEEF"; // 18369614221190020847
     char e[] = "0x4B1D"; //19229
