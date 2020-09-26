@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
+#include <endian.h>
 
 #define PACKED_BYTE(b) (((uint64_t)(b) & (0xff)) * 0x0101010101010101u)
 
@@ -39,11 +40,15 @@ size_t hexspeak2val(char str[]){
         //printf("%lx\n", value);
 
         //total = total << 64 ;
+#if __BYTE_ORDER == __LITTLE_ENDIAN
         for (size_t j = 0; j < 64 ; j += 8)
         {
             total += (( value << j ) >> 56) << (j >> 1);
             //printf("%lx",total);
         }
+#else
+        total += value;
+#endif
         //printf("%lx\n",total);
     }
     //printf("%lx\n",total);
@@ -71,7 +76,7 @@ int main(){
     char e[] = "0x4B1D"; //19229
     //for(int i = 0; i < strlen(a);i++) 
     //    printf("%c %d\n", a[i], hexchar2val(a[i]));
-    printf("%ld \n", hexspeak2val(e));
+    printf("%ld \n", hexspeak2val(b));
     //printf("%llx\n", (unsigned long long)(hexspeak2val(d) & 0xFFFFFFFFFFFFFFFF));
         
     return 0;
