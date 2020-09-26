@@ -27,8 +27,8 @@ size_t hexspeak2val(char str[]){
     size_t total = 0;
 
     size_t i = 2;
-    for (; (i + 8) <= len ; i += 8)
-    {
+    //for (; (i + 8) <= len ; i += 8)
+    //{
         uint64_t payload;
         memcpy(&payload, str + i, 8);
     
@@ -38,16 +38,17 @@ size_t hexspeak2val(char str[]){
         //printf("\n%lx\n", payload);
         //printf("%lx\n", value);
 
-        total = total << 64 ;
+        //total = total << 64 ;
         for (size_t j = 0; j < 64 ; j += 8)
         {
             total += (( value << j ) >> 56) << (j >> 1);
             //printf("%lx",total);
         }
-        printf("\n%lx\n",total);
-    }
-    printf("\n%lx\n",total);
+        //printf("%lx\n",total);
+    //}
+    //printf("%lx\n",total);
 
+    i = 10;
     for (; i < len ; i++)
     {
      total = total << 4;
@@ -64,11 +65,13 @@ size_t hexspeak2val(char str[]){
 
 int main(){
     char a[] = "123456789AaBbCcDdEeFf";
-    char b[] = "0x8BADF00D8BADF00D";   
-    char c[] = "FEEDFACECAFEBEEF";
+    char b[] = "0x8BADF00D";   // 2343432205
+    char c[] = "0x78BADF00D";  // 32408203277
+    //char d[] = "0xFEEDFACECAFEBEEF"; // 18369614221190020847
     //for(int i = 0; i < strlen(a);i++) 
     //    printf("%c %d\n", a[i], hexchar2val(a[i]));
     printf("%ld \n", hexspeak2val(c));
+    //printf("%llx\n", (unsigned long long)(hexspeak2val(d) & 0xFFFFFFFFFFFFFFFF));
         
     return 0;
 }
