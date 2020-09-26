@@ -36,8 +36,8 @@ size_t hexspeak2val(char str[]){
         const uint64_t letter = payload & PACKED_BYTE(0x40); 
         const uint64_t shift = (letter >> 3) | (letter >> 6);
         const uint64_t value = (payload + shift) & PACKED_BYTE(0x0f);
-        //printf("\n%lx\n", payload);
-        //printf("%lx\n", value);
+        printf("\n%lx\n", payload);
+        printf("%lx\n", value);
 
         //total = total << 64 ;
 #if __BYTE_ORDER == __LITTLE_ENDIAN
@@ -47,7 +47,8 @@ size_t hexspeak2val(char str[]){
             //printf("%lx",total);
         }
 #else
-        total += value;
+        for (size_t j = 0; j < 64 ; j += 8)
+            total += (( value << j ) >> 56) << ((56 - j) >> 3);
 #endif
         //printf("%lx\n",total);
     }
@@ -70,7 +71,7 @@ size_t hexspeak2val(char str[]){
 
 int main(){
     char a[] = "123456789AaBbCcDdEeFf";
-    char b[] = "0x8BADF00D";   // 2343432205
+    char b[] = "0xC8BADF00D";   // 2343432205
     char c[] = "0x78BADF00D";  // 32408203277
     //char d[] = "0xFEEDFACECAFEBEEF"; // 18369614221190020847
     char e[] = "0x4B1D"; //19229
