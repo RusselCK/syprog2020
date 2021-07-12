@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
     libattopng_save(png, "quiz10_rgb.png");
     
     float *m;
-    rgb_to_gray((const uint8_t *)png->data, W, H, m);
+    //rgb_to_gray((const uint8_t *)png->data, W, H, m);
     png->data = (char *)m;
     libattopng_save(png, "quiz10_rgb_to_gray.png");
 	
