@@ -21,20 +21,25 @@ void rgba_to_bw(uint32_t *bitmap, int width, int height) {
     
     int capacity = width * height;
     int round = capacity >> 3;
-#pragma unroll
+//#pragma unroll
     for (int i = 0; i < round; ++i) {
-		uint8x8x4_t _pixel = vld4_u8(pixel);
+	uint8x8x4_t _pixel = vld4_u8(pixel);
 			
-		uint16x8_t bw16;
-		bw16 = vmull_u8(      _pixel.val[2], _B2BW);
-		bw16 = vmlal_u8(bw16, _pixel.val[1], _G2BW);
-		bw16 = vmlal_u8(bw16, _pixel.val[0], _R2BW);
+	//__pld(&_pixel.val[0], &_pixel.val[1], &_pixel.val[2]);
+	__builtin_prefetch(&_pixel.val[0]);
+	__builtin_prefetch(&_pixel.val[1]);
+	__builtin_prefetch(&_pixel.val[2]);
 	
-		_pixel.val[0] = vshrn_n_u16(bw16, BW_SHIFT);
-		_pixel.val[1] = _pixel.val[0];
-		_pixel.val[2] = _pixel.val[1];   
+	uint16x8_t bw16;
+	bw16 = vmull_u8(      _pixel.val[2], _B2BW);
+	bw16 = vmlal_u8(bw16, _pixel.val[1], _G2BW);
+	bw16 = vmlal_u8(bw16, _pixel.val[0], _R2BW);
+	
+	_pixel.val[0] = vshrn_n_u16(bw16, BW_SHIFT);
+	_pixel.val[1] = _pixel.val[0];
+	_pixel.val[2] = _pixel.val[1];   
         
-		vst4_u8(pixel, _pixel);
+	vst4_u8(pixel, _pixel);
 	
         pixel += (4*8);
     }
@@ -43,7 +48,7 @@ void rgba_to_bw(uint32_t *bitmap, int width, int height) {
     uint8_t *r, *g, *b;
     uint8_t bw;
     for (int i = 0; i < remain; ++i) {
-		r = pixel + 2; 
+	r = pixel + 2; 
         g = pixel + 1;
         b = pixel;
         bw = ((*r)*R2BW + (*g)*G2BW + (*b)*B2BW) >> BW_SHIFT;
